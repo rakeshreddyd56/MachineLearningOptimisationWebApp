@@ -108,7 +108,7 @@ def build_model(df):
     grid_contour = grid_results.groupby(['max_features','n_estimators']).mean()
     grid_reset = grid_contour.reset_index()
     grid_reset.columns = ['max_features', 'n_estimators', 'R2']
-    grid_pivot = grid_reset.pivot('max_features', 'n_estimators')
+    grid_pivot = grid_reset.pivot(index='max_features', columns='n_estimators', values='mean_score')
     x = grid_pivot.columns.levels[1].values
     y = grid_pivot.index.values
     z = grid_pivot.values
