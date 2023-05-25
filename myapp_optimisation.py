@@ -9,18 +9,13 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.datasets import load_diabetes
 
-#---------------------------------#
-# Page layout
-## Page expands to full width
+
 st.set_page_config(page_title=' Machine Learning Hyperparameter Optimization App',
     layout='wide')
 
-#---------------------------------#
 st.write("""
 # The Machine Learning Hyperparameter Optimization App
-**(Regression Edition)**
 
-In this implementation, the *RandomForestRegressor()* function is used in this app for build a regression model using the **Random Forest** algorithm.
 
 """)
 
@@ -79,8 +74,7 @@ def build_model(df):
 
     # Data splitting
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=split_size)
-    #X_train.shape, Y_train.shape
-    #X_test.shape, Y_test.shape
+
 
     rf = RandomForestRegressor(n_estimators=parameter_n_estimators,
         random_state=parameter_random_state,
@@ -110,11 +104,8 @@ def build_model(df):
     st.subheader('Model Parameters')
     st.write(grid.get_params())
 
-    #-----Process grid data-----#
     grid_results = pd.concat([pd.DataFrame(grid.cv_results_["params"]),pd.DataFrame(grid.cv_results_["mean_test_score"], columns=["R2"])],axis=1)
-    # Segment data into groups based on the 2 hyperparameters
     grid_contour = grid_results.groupby(['max_features','n_estimators']).mean()
-    # Pivoting the data
     grid_reset = grid_contour.reset_index()
     grid_reset.columns = ['max_features', 'n_estimators', 'R2']
     grid_pivot = grid_reset.pivot('max_features', 'n_estimators')
@@ -122,7 +113,6 @@ def build_model(df):
     y = grid_pivot.index.values
     z = grid_pivot.values
 
-    #-----Plot-----#
     layout = go.Layout(
             xaxis=go.layout.XAxis(
               title=go.layout.xaxis.Title(
@@ -143,7 +133,6 @@ def build_model(df):
                       margin=dict(l=65, r=50, b=65, t=90))
     st.plotly_chart(fig)
 
-    #-----Save grid data-----#
     x = pd.DataFrame(x)
     y = pd.DataFrame(y)
     z = pd.DataFrame(z)
